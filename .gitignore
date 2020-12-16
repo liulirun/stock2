@@ -1,8 +1,25 @@
+#credentials
+credential/cred.py
+
+#TODO
+TODO.txt
+
+#VScode
+.VScode/
+
+data/sample.py
+data/*.json
+
+
+#mysqlredential data
+mysql/mysql_data/*
+!mysql/mysql_data/bk_stock.sql
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-
+*__pycache__*/
 # C extensions
 *.so
 
@@ -127,3 +144,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+mysql/Dockerfile.bk
