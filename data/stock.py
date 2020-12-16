@@ -10,7 +10,7 @@ def run():
 
     apihub = Apihub()
     db_helper = DbHelper()
-    stock_list = ['CRSP', 'TTD', 'SQ', 'BIGC', 'TSLA', 'PDD', 'TDOC']
+    stock_list = ['QQQ', 'CRSP', 'TTD', 'SQ', 'BIGC', 'TSLA', 'PDD', 'TDOC']
     for stock_name in stock_list:
         apihub.run(stock_name, market='US')
         db_helper.run("US_{}".format(stock_name))
@@ -28,4 +28,4 @@ def test_run():
 
 
 if __name__ == "__main__":
-    test_run()
+    run()

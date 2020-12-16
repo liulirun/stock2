@@ -30,7 +30,8 @@ class JsonHelper:
                      '3': ma_3, 
                      '13': ma_13, 
                      '34': ma_34, 
-                     'BULL':bull_list
+                     'BULL':bull_list, 
+                     'sp':split_list
                      }
         """
         with open("./data/{}_{}.json".format(market, stock_name), 'w') as f:

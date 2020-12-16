@@ -56,7 +56,8 @@ class DbHelper:
 
     def _read_json(self, stock_name):
         try:
-            json_dict = JsonHelper().read_json(stock_name)
+            json_helper = JsonHelper()
+            json_dict = json_helper.read_json(stock_name)
             return json_dict
         except:
             raise ValueError("can not read Json file:{}".format(stock_name))
@@ -80,6 +81,8 @@ class DbHelper:
     def truncate_table(self, table_name):
         _query = "TRUNCATE TABLE {};".format(table_name)
         self._commit_DB_change(_query)
+        if self.IF_DEBUG:
+            print("  truncate_table() --> truncate table {}".format(table_name))
 
     def drop_table(self, table_name):
         _query = "DROP TABLE {};".format(table_name)
@@ -126,6 +129,7 @@ class DbHelper:
         m13 = stock_json['13']
         m34 = stock_json['34']
         bl = stock_json['BULL']
+        sl = stock_json['sp']
         ds = str(date.today())
         _index = -1
         json_earliest = datetime.strptime(dl[0], "%Y-%m-%d").date()
@@ -158,9 +162,15 @@ class DbHelper:
         if (_index == -1):
             raise ValueError("_index is still -1, check coverage path")
 
-        stock_list = [(dl[i], pl[i], vl[i], m3[i], m13[i], m34[i], bl[i], ds, ds) for i in range(_index, len(dl))]
+        l_length = len(dl)
+        stock_list = [(dl[i], pl[i], vl[i], m3[i], m13[i], m34[i], bl[i], ds, ds) for i in range(_index, l_length)]
+
+        if any(i != 1.0 for i in sl[_index:l_length]):
+            self.truncate_table(stock_name)
+
         if self.IF_DEBUG:
             print("  insert_stock_data_to_db() --> stock_list from {} to {} generated".format(dl[_index], dl[-1]))
+
         self.insert_tick_data(stock_name, stock_list)
         return stock_list
 

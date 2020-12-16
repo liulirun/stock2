@@ -48,6 +48,7 @@ class Apihub:
             date_list=[str(datetime.strptime(i, '%Y-%m-%dT%H:%M:%S.%f%z').date()) for i in date_list_pre]
             price_list=[d['adjClose'] for d in tiingo_list]
             vol_list=[d['adjVolume'] for d in tiingo_list]
+            split_list = [d['splitFactor'] for d in tiingo_list]
             assert len(date_list) == len(price_list), "ERROR: len(date_list) != len(price_list)"
             assert len(date_list) == len(vol_list), "ERROR: len(date_list) != len(vol_list)"
         except:
@@ -56,7 +57,7 @@ class Apihub:
         if(self.IF_DEBUG):
             print("  convert_candle_data()--> for {} days, from {} to {}"
                   .format(len(date_list), date_list[0], date_list[-1]))
-        stock_dict={'date': date_list, 'c': price_list, 'v': vol_list}
+        stock_dict={'date': date_list, 'c': price_list, 'v': vol_list, 'sp':split_list}
 
         stock_data_helper=StockDataHelper()
         ma_3, ma_13, ma_34=stock_data_helper.ma_lists(price_list)

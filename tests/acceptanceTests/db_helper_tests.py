@@ -57,7 +57,8 @@ class Test_db_helper_Methods(unittest.TestCase):
                                           '3': [1, 2, 3],
                                           '13': [11, 12, 13],
                                           '34': [31, 32, 33],
-                                          'BULL': [-1, 0, 1]}
+                                          'BULL': [-1, 0, 1],
+                                          'sp': [1.0, 1.0, 1.0]}
         table_name = "TEST"
         if (helper.table_exists(table_name)):
             helper.drop_table(table_name)
@@ -71,7 +72,8 @@ class Test_db_helper_Methods(unittest.TestCase):
                                           '3': [1, 2, 3],
                                           '13': [11, 12, 13],
                                           '34': [31, 32, 33],
-                                          'BULL': [-1, 0, 1]}
+                                          'BULL': [-1, 0, 1],
+                                          'sp': [1.0, 1.0, 1.0]}
         result_list = helper.insert_stock_data_to_db(table_name)
         self.assertEqual(len(result_list), 2)
 

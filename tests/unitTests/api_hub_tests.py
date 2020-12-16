@@ -14,33 +14,38 @@ class Test_convert_candle_data_Method(unittest.TestCase):
                 "date": "2019-01-02T00:00:00.000Z",
                 "close": 157.92,
                 "adjClose": 157.92,
-                "adjVolume": 37039737
+                "adjVolume": 37039737,
+                "splitFactor": 1.0
             },
             {
                 "date": "2019-01-03T00:00:00.000Z",
                 "close": 142.19,
                 "adjClose": 142.19,
-                "adjVolume": 91312195
+                "adjVolume": 91312195,
+                "splitFactor": 1.0
             },
             {
                 "date": "2019-01-04T00:00:00.000Z",
                 "close": 148.26,
                 "adjClose": 148.26,
-                "adjVolume": 58607070
+                "adjVolume": 58607070,
+                "splitFactor": 1.0
             },
             {
                 "date": "2019-01-07T00:00:00.000Z",
                 "close": 147.93,
                 "adjClose": 147.93,
-                "adjVolume": 54777764
+                "adjVolume": 54777764,
+                "splitFactor": 5.0
             }
         ]
 
         result = self.helper.convert_candle_data(tiingo_list)
-        self.assertEqual(len(result), 7)
+        self.assertEqual(len(result), 8)
         self.assertEqual(len(result['date']), 4)
         self.assertGreater(result['3'][2], 140)
         self.assertEqual(result['BULL'], [-1, -1, -1, -1])
+        self.assertEqual(result['sp'], [1.0, 1.0, 1.0, 5.0])
 
     def test_empty_tiingo_list(self):
         tiingo_list = []
