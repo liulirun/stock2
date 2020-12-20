@@ -5,15 +5,22 @@ from data.db_helper import DbHelper
 # logic: download from apihub, handles json, save to MYSQL DB, and save json file
 def run():
     """
-    loop generate or insert TICK into Myql
+    Entrance for data folder.
+    Insert TICK data into Mysql.
     """
-
     apihub = Apihub()
     db_helper = DbHelper()
-    stock_list = ['QQQ', 'CRSP', 'TTD', 'SQ', 'BIGC', 'TSLA', 'PDD', 'TDOC']
-    for stock_name in stock_list:
+
+    US_lists = ['QQQ', 'CRSP', 'TTD', 'SQ', 'BIGC', 'TSLA', 'PDD', 'TDOC', 'OKTA', 'ZUO', 'OOMA']
+    for stock_name in US_lists:
         apihub.run(stock_name, market='US')
         db_helper.run("US_{}".format(stock_name))
+        print("\n=======================\n")
+
+    CN_lists = ['002230', '300552', '000001', '300015', '600660', '002038', '603288']
+    for stock_name in CN_lists:
+        apihub.run(stock_name, market='CN')
+        db_helper.run("CN_{}".format(stock_name))
         print("\n=======================\n")
 
 

@@ -1,35 +1,48 @@
-# stock2
+<h1>stock2</h1>
 
-This is home practice for Stock analyze -- a python finance project
+<h2>Purpose</h2>
 
-1. download stock data from web
-2. store data to MySQL docker container
+Home practice for Stock analyze -- a python finance project
+created by liulirun@gmail.com at Dec.2020
+
+<h2>Scenarios</h2>
+
+1. download latest stock data from web
+2. save data to MySQL docker container
 3. analyze the stock data based on MySQL data
 4. do regression, find pattern, etc
 
-Design:
-/credential: store credential data, like tokens, password
-/mysql: for maintaining mysql container runnning in local, includes docker-compose, back up script
-/data: for inserting stock data into mysql DB
+<h2>Install</h2>
 
-/data/api_hub: 
-download data from api. 
-import stock_data_helper to generate stock data
-import json_helper to save json
-
-
-/data/db_helper:
-DB api (create, update, read, etc)
-generating stock_list- import json_helper to read json, then use insert_stock_data_to_db to create the stock_list
+1. install docker in your local
+2. docker pull [mysql-stock2](https://hub.docker.com/repository/docker/liulirun/mysql-stock2) from docker hub, or run /mysql/docker-compose.yaml. It is private for now, contact liulirun@gmail.com for access.
+3. install python 3.8 and pip. 
+4. pip install dependencies: MySQLdb, docker, requests, json, pandas, numpy, matplotlib, scipy, mock.
+5. pull this repo
+6. rename /credential/example.py to cred.py
+7. run main.py
 
 
-/data/stock_data_helper:
-create moving_average list
-create BULL list for api_hub to use, save to json for later
+<h2>Design</h2>
+
+- **/credential/**: store credential data,tokens, password, etc.
+- **/mysql/**: maintain mysql container which is runnning in local, including docker-compose, back up scripts.
+- **/data/**: for inserting stock data into mysql DB:
+    - **api_hub.py**: download data from api, generate stock data, then save to local .json.
+    - **db_helper.py**: mysql function as read local .json, insert stock_data to DB, fetch stock_data for future use.
+    - **stock_data_helper.py**: create moving_average and Bull list for api_hub.
+    - **json_helper.py**: save, read json file only.
+- **/analyze/**: generate daily png and other algos. 
+    - **draw.py**: draw png for daily stock, including 21 days and 2 years price/vols. Also Gaussian KDE density for 2 years.
+    - **algo_current.py**: daily stock analyze.
+- **/tests/**: test files. Do not forget the best practice is Continuous Testing.
 
 
-/data/json_helper:
-save, read json file only
+<h2>Misc</h2>
+
+
+
+
 
 
 

@@ -189,6 +189,17 @@ class DbHelper:
         except:
             raise ValueError("Oops! {} occurred".format(sys.exc_info()[0]))
 
+    def get_all_tables(self):
+        _query = "SHOW TABLES;"
+        _cursor = self.cnx.cursor()
+        _result = _cursor.execute(_query)
+        assert _result > 1
+        return [i[0] for i in _cursor._rows]
 
+    def current_stock_data(self, table_name, days=484):
+        _query = "SELECT * from stock.{} ORDER BY stock_date DESC LIMIT {};".format(table_name, days)
+        result = self._fetch_all(_query)
+        return result
+    
 if __name__ == "__main__":
     pass

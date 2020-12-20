@@ -1,15 +1,19 @@
 #credentials
 credential/cred.py
 
-#TODO
 TODO.txt
+supported_tickers.csv
 
 #VScode
 .VScode/
 
+# files in data folder
 data/sample.py
 data/*.json
 
+# files in analyze folder
+analyze/sample.py
+analyze/*.png
 
 #mysqlredential data
 mysql/mysql_data/*
@@ -145,3 +149,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 mysql/Dockerfile.bk
+bash.exe.stackdump

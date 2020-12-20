@@ -6,7 +6,7 @@ class Backup:
         self.docker_client = docker.from_env()
 
     def backup_mysql(self, container_name="mysql-stock2"):
-        print(" backup_mysql() started")
+        print("Backup.backup_mysql() started")
         for container in self.docker_client.containers.list():
             if (container.name == container_name):
                 c = self.docker_client.containers.get(container.short_id)
@@ -15,7 +15,7 @@ class Backup:
                 print(res)
 
     def push_mysql_image(self, image_name="liulirun/mysql-stock2"):
-        print(" push_mysql_image() started")
+        print("Backup.push_mysql_image() started")
 
         image = self.docker_client.images.get("{}:latest".format(image_name))
         image.tag(image_name, tag='latest')
