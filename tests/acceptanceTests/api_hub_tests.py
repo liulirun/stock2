@@ -5,7 +5,7 @@ import mock
 from data.api_hub import Apihub
 
 
-class Test_api_hub_Methods(unittest.TestCase):
+class Test_ACCEPTANCE_api_hub_Methods(unittest.TestCase):
     def setUp(self):
         self.helper = Apihub()
 

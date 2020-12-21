@@ -34,7 +34,7 @@ created by liulirun@gmail.com at Dec.2020
     - **json_helper.py**: save, read json file only.
 - **/analyze/**: generate daily png and other algos. 
     - **draw.py**: draw png for daily stock, including 21 days and 2 years price/vols. Also Gaussian KDE density for 2 years.
-    - **algo_current.py**: daily stock analyze.
+    - **algo_daily.py**: daily stock analyze.
 - **/tests/**: test files. Do not forget the best practice is Continuous Testing.
 
 

@@ -8,7 +8,7 @@ class JsonHelper:
     """
 
     def __init__(self):
-        self.IF_DEBUG = True
+        self.IF_DEBUG = False
 
     def read_json(self, stock_name):
         """

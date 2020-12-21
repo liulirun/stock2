@@ -3,7 +3,7 @@ import unittest
 from data.stock_data_helper import StockDataHelper
 
 
-class Test_stock_data_helper_Methods(unittest.TestCase):
+class Test_UNIT_stock_data_helper_Methods(unittest.TestCase):
     def setUp(self):
         self.helper = StockDataHelper()
 

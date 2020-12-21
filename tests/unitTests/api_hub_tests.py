@@ -4,7 +4,7 @@ import mock
 from data.api_hub import Apihub
 
 
-class Test_convert_candle_data_Method(unittest.TestCase):
+class Test_UNIT_api_hub_Method(unittest.TestCase):
     def setUp(self):
         self.helper = Apihub()
 

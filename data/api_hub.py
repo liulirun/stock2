@@ -9,13 +9,12 @@ from data.stock_data_helper import StockDataHelper
 
 class Apihub:
     def __init__(self):
-        self.IF_DEBUG = True
+        self.IF_DEBUG = False
         self.token = cred.tiingo["token"]
         self.root_url = cred.tiingo["root_url"]
 
     def run(self, stock_name, date_start='2010-01-01', date_end=datetime.now().date(), market='US'):
-        if (self.IF_DEBUG):
-            print("start Apihub.run() for stock {}".format(stock_name))
+        print("Apihub().run() --> for stock {}".format(stock_name))
         tiingo_list = self.download_candle(stock_name, date_start, date_end)
         stock_dict = self.convert_candle_data(tiingo_list)
         self.save_candle_to_json(stock_name, stock_dict, market)
@@ -80,6 +79,4 @@ class Apihub:
 
 
 if __name__ == "__main__":
-    # h=Apihub()
-    # h.run('TSLA', date_start='2020-01-01', date_end='2020-10-01')
     pass

@@ -5,7 +5,7 @@ import mock
 from data.db_helper import DbHelper
 
 
-class Test_db_helper_Methods(unittest.TestCase):
+class Test_ACCEPTANCE_helper_Methods(unittest.TestCase):
     def test_insert_tick_data_with_no_date(self):
         helper = DbHelper()
         table_name = "TEST"

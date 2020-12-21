@@ -5,10 +5,11 @@ from matplotlib import gridspec
 from scipy.stats import gaussian_kde
 
 
-class Draw():
-    def __init__(self, stock_name, stock_tuple):
-        self.IF_DEBUG = True
+class DrawHelper():
+    def __init__(self, stock_name, stock_tuple, cn_name=''):
+        self.IF_DEBUG = False
         self.stock_name = stock_name
+        self.cn_name = cn_name
         self.date_list = [str(t[0]) for t in stock_tuple]
         self.price_list = [float(t[1]) for t in stock_tuple]
         self.vol_list = [int(t[2]) for t in stock_tuple]
@@ -22,7 +23,7 @@ class Draw():
 
     def run(self):
         if self.IF_DEBUG:
-            print("  Draw().run() --> start with {}, at {}".format(self.stock_name, self.latest_date))
+            print("  DrawHelper().run() --> start with {}, at {}".format(self.stock_name, self.latest_date))
         params = {'legend.fontsize': 'medium',
                   'legend.title_fontsize': 'x-large',
                   'figure.figsize': (20, 10),
@@ -30,27 +31,28 @@ class Draw():
                   'axes.titlesize': 'x-large',
                   'axes.facecolor': self.subplotcolor,
                   'figure.facecolor': self.backcolor,
+                  'font.family': 'sans-serif',
+                  'font.sans-serif': ['Microsoft YaHei'],  # you need to point to a font in C:\Windows\Fonts
                   }
         pyplot.rcParams.update(params)
+
         fig = pyplot.figure()
-        fig.suptitle("{} - {}".format(self.stock_name, self.latest_date))
-        # grid
-        # 2 years, 21 days:
-        # 0         1 (KDE)
-        # 2         3 (PRICE)
-        # 4         5 (VOL)
+        fig.suptitle("{}{} - {}".format(self.stock_name, self.cn_name, self.latest_date))
+
         grid_specs = gridspec.GridSpec(3, 2, height_ratios=[2, 2, 1])
         self.draw_kde(grid_specs[0])
         self.draw_price(grid_specs[2], grid_specs[3])
         self.draw_vol(grid_specs[4], grid_specs[5])
 
         pyplot.savefig("./analyze/{}.png".format(self.stock_name))
+        if self.IF_DEBUG:
+            print("  DrawHelper().run() --> {} saved".format(self.stock_name))
 
     def draw_price(self, gs_left, gs_right):
         ax1 = pyplot.subplot(gs_left)
         ax1.plot(self.price_list, color='black', label='price')
         ax1.plot(self.ma13, color='blue', label='ma13')
-        ax1.plot(self.ma34, color='red', label='ma21')
+        ax1.plot(self.ma34, color='red', label='ma34')
         ax1.legend(loc='upper left', bbox_to_anchor=[0, 1], shadow=True)
 
         ax2 = pyplot.subplot(gs_right)
@@ -60,7 +62,7 @@ class Draw():
         ax2.plot(self.price_list[-21:], color='black', label='price')
         ax2.plot(self.ma3[-21:], color='green', label='ma3')
         ax2.plot(self.ma13[-21:], color='blue', label='ma13')
-        ax2.plot(self.ma34[-21:], color='red', label='ma21')
+        ax2.plot(self.ma34[-21:], color='red', label='ma34')
         # ax2.fill_between(self.price_list[-21:], self.ma3[-21:], color='green')
         leg = ax2.legend(loc='upper left', bbox_to_anchor=[0, 1], title="tick:{}".format(_bull), shadow=True)
         if _bull == 'BEAR':

@@ -15,13 +15,12 @@ def run():
     for stock_name in US_lists:
         apihub.run(stock_name, market='US')
         db_helper.run("US_{}".format(stock_name))
-        print("\n=======================\n")
 
-    CN_lists = ['002230', '300552', '000001', '300015', '600660', '002038', '603288']
-    for stock_name in CN_lists:
+    CN_dicts = {'002230': u'科大讯飞', '300552': u'万集科技', '300015': u'爱尔眼科',
+                '600660': u'福耀玻璃', '002038': u'双鹭药业', '603288': u'海天味业'}
+    for stock_name in CN_dicts.keys():
         apihub.run(stock_name, market='CN')
-        db_helper.run("CN_{}".format(stock_name))
-        print("\n=======================\n")
+        db_helper.run("CN_{}".format(stock_name), CN_dicts[stock_name])
 
 
 def clean_up_old_DB():

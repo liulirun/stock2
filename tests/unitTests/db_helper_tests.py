@@ -5,26 +5,34 @@ import mock
 from data.db_helper import DbHelper
 
 
-class Test_latest_date_in_db_Method(unittest.TestCase):
+class Test_UNIT_stock_helper_Method(unittest.TestCase):
+    def setUp(self):
+        self.helper = DbHelper()
+
+    @mock.patch('data.db_helper.DbHelper._fetch_all')
+    def test_current_stock_cn_name_happy_path(self, mock_fetch_all):
+        mock_fetch_all.return_value = (('测试1', ''), ('测试2', ''))
+        result = self.helper.current_stock_cn_name("mock_tets")
+        self.assertEqual(result, '测试1')
+
+    @mock.patch('data.db_helper.DbHelper._fetch_all')
+    def test_current_stock_cn_name_null_value(self, mock_fetch_all):
+        mock_fetch_all.return_value = ()
+        result = self.helper.current_stock_cn_name("mock_tets")
+        self.assertEqual(result, '')
+
     @mock.patch('data.db_helper.DbHelper._fetch_all')
     def test_happy_path(self, mock_fetch):
-        helper = DbHelper()
         mock_fetch.return_value = ((date(2020, 1, 1),),)
-        result = helper._latest_date_in_db("mock_tets")
+        result = self.helper._latest_date_in_db("mock_tets")
         self.assertTrue(isinstance(result, date))
         self.assertEqual(result, date(2020, 1, 1))
 
     @mock.patch('data.db_helper.DbHelper._fetch_all')
     def test_empty(self, mock_fetch):
-        helper = DbHelper()
         mock_fetch.return_value = ()
-        result = helper._latest_date_in_db("mock_tets")
+        result = self.helper._latest_date_in_db("mock_tets")
         self.assertEqual(result, date(2081, 1, 1))
-
-
-class Test_insert_stock_data_to_db_Method(unittest.TestCase):
-    def setUp(self):
-        self.helper = DbHelper()
 
     @mock.patch('data.db_helper.DbHelper._read_json')
     def test_insert_stock_data_to_db_empty(self, mock_read_json):

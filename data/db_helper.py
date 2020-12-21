@@ -12,22 +12,21 @@ class DbHelper:
     """
 
     def __init__(self):
-        self.IF_DEBUG = True
+        self.IF_DEBUG = False
         self.cnx = db.connect(
             host=cred.mysqlDB["url"],
             user=cred.mysqlDB["user"],
             password=cred.mysqlDB["password"],
-            database='stock'
+            database='stock',
+            charset="utf8",
+            use_unicode=True
         )
 
-    def run(self, table_name):
+    def run(self, table_name, CN_name=''):
         """
         entry point to insert stock data
         takes table_name like US_TLSA
         """
-        if self.IF_DEBUG:
-            print("start DbHelper.run() for table_name: {}".format(table_name))
-
         if (not self.table_exists(table_name)):
             if self.IF_DEBUG:
                 print("  DB table {} not exists, creating now".format(table_name))
@@ -35,7 +34,16 @@ class DbHelper:
 
         if (self.table_exists(table_name)):
             stock_name = table_name
+            self.insert_stock_CN_names(table_name, CN_name)
             stock_list = self.insert_stock_data_to_db(stock_name)
+
+    def insert_stock_CN_names(self, table_name, CN_name):
+        if (not self.table_exists('cn_names')):
+            self.create_cn_name_table('cn_names')
+
+        query = "INSERT INTO stock.cn_names (cn_code, cn_name) SELECT * FROM (SELECT '{}', '{}') AS tmp \
+            WHERE NOT EXISTS ( SELECT cn_code FROM stock.cn_names WHERE cn_code='{}') LIMIT 1;".format(table_name, CN_name, table_name)
+        self._commit_DB_change(query)
 
     def _commit_DB_change(self, query):
         """
@@ -102,6 +110,13 @@ class DbHelper:
             bull tinyint not null, \
             created_by date not null, \
             updated_by date not null\
+            );".format(table_name)
+        self._commit_DB_change(_query)
+
+    def create_cn_name_table(self, table_name):
+        _query = "CREATE TABLE {} (\
+            cn_code CHAR(12) PRIMARY KEY, \
+            cn_name CHAR(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci not null\
             );".format(table_name)
         self._commit_DB_change(_query)
 
@@ -179,8 +194,7 @@ class DbHelper:
         """
         _query = "INSERT INTO stock.{} (stock_date, price, vol, a3, a13, a34, bull, created_by, updated_by) \
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)".format(table_name)
-        if self.IF_DEBUG:
-            print("  insert_tick_data() --> insert into {} for {} lines".format(table_name, len(stock_list)))
+        print("DbHelper().insert_tick_data() --> insert into {} for {} lines".format(table_name, len(stock_list)))
 
         try:
             _cursor = self.cnx.cursor()
@@ -197,9 +211,17 @@ class DbHelper:
         return [i[0] for i in _cursor._rows]
 
     def current_stock_data(self, table_name, days=484):
-        _query = "SELECT * from stock.{} ORDER BY stock_date DESC LIMIT {};".format(table_name, days)
+        _query = "SELECT * FROM stock.{} ORDER BY stock_date DESC LIMIT {};".format(table_name, days)
         result = self._fetch_all(_query)
         return result
-    
+
+    def current_stock_cn_name(self, table_name):
+        _query = "SELECT cn_name FROM stock.cn_names WHERE cn_code='{}' LIMIT 1;".format(table_name)
+        result = self._fetch_all(_query)
+        if len(result) > 0:
+            return result[0][0]
+        return ''
+
+
 if __name__ == "__main__":
     pass
