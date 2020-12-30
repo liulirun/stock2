@@ -45,6 +45,8 @@ class DrawHelper():
         self.draw_vol(grid_specs[4], grid_specs[5])
 
         pyplot.savefig("./analyze/{}.png".format(self.stock_name))
+        pyplot.close(fig)
+
         if self.IF_DEBUG:
             print("  DrawHelper().run() --> {} saved".format(self.stock_name))
 

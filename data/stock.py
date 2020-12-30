@@ -1,5 +1,6 @@
 from data.api_hub import Apihub
 from data.db_helper import DbHelper
+from data.index_hub import Indexhub
 
 
 # logic: download from apihub, handles json, save to MYSQL DB, and save json file
@@ -11,7 +12,14 @@ def run():
     apihub = Apihub()
     db_helper = DbHelper()
 
-    US_lists = ['QQQ', 'CRSP', 'TTD', 'SQ', 'BIGC', 'TSLA', 'PDD', 'TDOC', 'OKTA', 'ZUO', 'OOMA']
+    market_lists = ['US', 'CN']
+    for market in market_lists:
+        indexhub = Indexhub(market=market)
+        indexhub.run()
+        db_helper.run("{}_{}".format(market, "INDEX"))
+
+    US_lists = ['QQQ', 'CRSP', 'TTD', 'SQ', 'BIGC', 'TSLA', 'PDD',
+                'TDOC', 'OKTA', 'ZUO', 'OOMA', 'GRWG', 'SOLY', 'SNOW', 'LVGO']
     for stock_name in US_lists:
         apihub.run(stock_name, market='US')
         db_helper.run("US_{}".format(stock_name))

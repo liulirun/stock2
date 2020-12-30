@@ -5,7 +5,7 @@ import mock
 from data.db_helper import DbHelper
 
 
-class Test_UNIT_stock_helper_Method(unittest.TestCase):
+class Test_UNIT_db_helper_Method(unittest.TestCase):
     def setUp(self):
         self.helper = DbHelper()
 
@@ -22,14 +22,14 @@ class Test_UNIT_stock_helper_Method(unittest.TestCase):
         self.assertEqual(result, '')
 
     @mock.patch('data.db_helper.DbHelper._fetch_all')
-    def test_happy_path(self, mock_fetch):
+    def test_latest_date_in_db_happy_path(self, mock_fetch):
         mock_fetch.return_value = ((date(2020, 1, 1),),)
         result = self.helper._latest_date_in_db("mock_tets")
         self.assertTrue(isinstance(result, date))
         self.assertEqual(result, date(2020, 1, 1))
 
     @mock.patch('data.db_helper.DbHelper._fetch_all')
-    def test_empty(self, mock_fetch):
+    def test_latest_date_in_db_empty(self, mock_fetch):
         mock_fetch.return_value = ()
         result = self.helper._latest_date_in_db("mock_tets")
         self.assertEqual(result, date(2081, 1, 1))
@@ -40,11 +40,20 @@ class Test_UNIT_stock_helper_Method(unittest.TestCase):
         result = self.helper.insert_stock_data_to_db("mock_tets")
         self.assertEqual(len(result), 0)
 
+    @mock.patch('data.db_helper.DbHelper.table_exists')
+    @mock.patch('data.db_helper.DbHelper.create_table')
+    def test_create_DB_if_not_exists(self, mock_table_exists, mock_create_table):
+        self.helper.table_exists.return_value = False
+        self.helper.create_table.return_value = None
+        self.helper.create_DB_if_not_exists("mock_tests")
+        self.assertEqual(self.helper.create_table.called, True)
+        self.assertEqual(self.helper.create_table.call_count, 1)
+
     @mock.patch('data.db_helper.DbHelper._read_json')
     @mock.patch('data.db_helper.DbHelper._latest_date_in_db')
     @mock.patch('data.db_helper.DbHelper.insert_tick_data')
     @mock.patch('data.db_helper.DbHelper.truncate_table')
-    def test_happy_path(self, mock_read_json, mock_db_latest_date, mock_insert_tick_data, mock_truncate_table):
+    def test_insert_stock_data_to_db_happy_path(self, mock_read_json, mock_db_latest_date, mock_insert_tick_data, mock_truncate_table):
         self.helper._read_json.return_value = {'date': ["2012-01-01", "2012-01-02", "2012-01-03"],
                                                'c': [1, 2, 3],
                                                'v': [10, 20, 30],
@@ -69,7 +78,7 @@ class Test_UNIT_stock_helper_Method(unittest.TestCase):
     @mock.patch('data.db_helper.DbHelper._latest_date_in_db')
     @mock.patch('data.db_helper.DbHelper.insert_tick_data')
     @mock.patch('data.db_helper.DbHelper.truncate_table')
-    def test_split_list_none_called(self, mock_read_json, mock_db_latest_date, mock_insert_tick_data, mock_truncate_table):
+    def test_insert_stock_data_to_db_split_list_none_called(self, mock_read_json, mock_db_latest_date, mock_insert_tick_data, mock_truncate_table):
         self.helper._read_json.return_value = {'date': ["2012-01-01", "2012-01-02", "2012-01-03"],
                                                'c': [1, 2, 3],
                                                'v': [10, 20, 30],
@@ -91,7 +100,7 @@ class Test_UNIT_stock_helper_Method(unittest.TestCase):
     @mock.patch('data.db_helper.DbHelper._latest_date_in_db')
     @mock.patch('data.db_helper.DbHelper.insert_tick_data')
     @mock.patch('data.db_helper.DbHelper.truncate_table')
-    def test_split_list_called_only_once(self, mock_read_json, mock_db_latest_date, mock_insert_tick_data, mock_truncate_table):
+    def test_insert_stock_data_to_db_split_list_called_only_once(self, mock_read_json, mock_db_latest_date, mock_insert_tick_data, mock_truncate_table):
         self.helper._read_json.return_value = {'date': ["2012-01-01", "2012-01-02", "2012-01-03"],
                                                'c': [1, 2, 3],
                                                'v': [10, 20, 30],
@@ -130,7 +139,7 @@ class Test_UNIT_stock_helper_Method(unittest.TestCase):
     @mock.patch('data.db_helper.DbHelper._read_json')
     @mock.patch('data.db_helper.DbHelper._latest_date_in_db')
     @mock.patch('data.db_helper.DbHelper.insert_tick_data')
-    def test_no_data_in_DB(self, mock_read_json, mock_db_latest_date, mock_insert_tick_data):
+    def test_insert_stock_data_to_db_no_data_in_DB(self, mock_read_json, mock_db_latest_date, mock_insert_tick_data):
         self.helper._read_json.return_value = {'date': ["2012-01-01", "2012-01-02", "2012-01-03"],
                                                'c': [1, 2, 3],
                                                'v': [10, 20, 30],

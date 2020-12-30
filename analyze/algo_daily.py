@@ -1,6 +1,6 @@
-from data.db_helper import DbHelper
 
 from analyze.draw_helper import DrawHelper
+from data.db_helper import DbHelper
 
 
 class Algo_Daily:
@@ -22,10 +22,10 @@ class Algo_Daily:
         table_list = [i for i in tables if i.startswith(market)]
         for i in table_list:
             print("Algo_Daily().run() --> for {}".format(i))
-            self.current_stock_data(i)
+            self.draw_stock_data(table_name=i, days=484)
 
-    def current_stock_data(self, table_name):
-        result = self.db_helper.current_stock_data(table_name)
+    def draw_stock_data(self, table_name, days):
+        result = self.db_helper.stock_data_for_days(table_name=table_name, days=days)
         stock_tuple = result[::-1]
         cn_name = self.db_helper.current_stock_cn_name(table_name)
 

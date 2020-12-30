@@ -27,15 +27,17 @@ class DbHelper:
         entry point to insert stock data
         takes table_name like US_TLSA
         """
+        self.create_DB_if_not_exists(table_name)
+
+        stock_name = table_name
+        self.insert_stock_CN_names(table_name, CN_name)
+        stock_list = self.insert_stock_data_to_db(stock_name)
+
+    def create_DB_if_not_exists(self, table_name):
         if (not self.table_exists(table_name)):
             if self.IF_DEBUG:
                 print("  DB table {} not exists, creating now".format(table_name))
             self.create_table(table_name)
-
-        if (self.table_exists(table_name)):
-            stock_name = table_name
-            self.insert_stock_CN_names(table_name, CN_name)
-            stock_list = self.insert_stock_data_to_db(stock_name)
 
     def insert_stock_CN_names(self, table_name, CN_name):
         if (not self.table_exists('cn_names')):
@@ -210,8 +212,13 @@ class DbHelper:
         assert _result > 1
         return [i[0] for i in _cursor._rows]
 
-    def current_stock_data(self, table_name, days=484):
+    def stock_data_for_days(self, table_name, days=484):
         _query = "SELECT * FROM stock.{} ORDER BY stock_date DESC LIMIT {};".format(table_name, days)
+        result = self._fetch_all(_query)
+        return result
+
+    def stock_data_since_date(self, table_name, date):
+        _query = "SELECT * FROM stock.{} where stock_date >= '{}' ORDER BY stock_date ASC;".format(table_name, date)
         result = self._fetch_all(_query)
         return result
 
@@ -221,6 +228,13 @@ class DbHelper:
         if len(result) > 0:
             return result[0][0]
         return ''
+
+    def closest_date(self, table_name, start_date):
+        _query = "SELECT stock_date from stock.{} where stock_date >= '{}' \
+            order by stock_date ASC Limit 1;".format(table_name, start_date)
+        result = self._fetch_all(_query)
+        assert len(result) > 0
+        return result[0][0]
 
 
 if __name__ == "__main__":

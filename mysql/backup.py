@@ -20,12 +20,10 @@ class Backup:
                     print(res)
 
     def push_mysql_image(self, image_name="liulirun/mysql-stock2"):
-        image = self.docker_client.images.get("{}:latest".format(image_name))
-        image.tag(image_name, tag='latest')
-        result = self.docker_client.images.push(image_name, tag='latest', stream=True, decode=True)
-        if self.IF_DEBUG:
-            print(result)
-            print("  Backup().push_mysql_image() --> image pushed to docker hub")
+        container = self.docker_client.containers.get('mysql-stock2')
+        container.commit('mysql-stock2', tag='latest')
+        for line in self.docker_client.images.push(image_name, tag='latest', stream=True, decode=True):
+            print(line)
 
 
 if __name__ == "__main__":
