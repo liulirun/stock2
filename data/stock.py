@@ -19,7 +19,7 @@ def run():
         db_helper.run("{}_{}".format(market, "INDEX"))
 
     US_lists = ['QQQ', 'CRSP', 'TTD', 'SQ', 'BIGC', 'TSLA', 'PDD',
-                'TDOC', 'OKTA', 'ZUO', 'OOMA', 'GRWG', 'SOLY', 'SNOW', 'LVGO']
+                'TDOC', 'OKTA', 'ZUO', 'OOMA', 'GRWG', 'SOLY', 'SNOW', 'LVGO', 'BILI']
     for stock_name in US_lists:
         apihub.run(stock_name, market='US')
         db_helper.run("US_{}".format(stock_name))

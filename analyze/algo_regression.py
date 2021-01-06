@@ -1,8 +1,12 @@
 import math
 from operator import methodcaller
 
-import matplotlib.pyplot as pyplot
+import matplotlib
+import numpy as np
 from data.db_helper import DbHelper
+from matplotlib import gridspec, pyplot
+
+matplotlib.use('Agg')
 
 
 class Algo_Regression:
@@ -13,6 +17,7 @@ class Algo_Regression:
 
     def __init__(self, stock_name, buy_options_and, buy_options_or, sell_options_and, sell_options_or, start_date, cn_name=''):
         self.IF_DEBUG = False
+        self.top_n = 10
         self.stock_name = stock_name
         self.cn_name = cn_name
         self.buy_options_and = list(map(methodcaller("split", "_"), buy_options_and))
@@ -55,14 +60,39 @@ class Algo_Regression:
         self._lose_per_transaction = 0.02
         self._dealer_fee = 10
 
-        self.subplotcolor = "#E8DC70"  # yellow ish
+        self.subplotcolor = "#cc9918"  # yellow-brown ish
         self.backcolor = "#999a88"  # grey
 
+        params = {'legend.fontsize': 'medium',
+                  'legend.title_fontsize': 'x-large',
+                  'figure.figsize': (20, 10),
+                  'axes.labelsize': 'large',
+                  'axes.titlesize': 'large',
+                  'axes.facecolor': self.subplotcolor,
+                  'figure.facecolor': self.backcolor,
+                  'font.family': 'sans-serif',
+                  'font.sans-serif': ['Microsoft YaHei'],  # you need to point to a font in C:\Windows\Fonts
+                  }
+        pyplot.rcParams.update(params)
+
+        self.fig = pyplot.figure()
+
+        grid_specs = gridspec.GridSpec(3, 1, height_ratios=[3, 1, 1])
+        self.price_ax = pyplot.subplot(grid_specs[0])
+        self.ma_ax_1 = pyplot.subplot(grid_specs[1])
+        self.ma_ax_2 = pyplot.subplot(grid_specs[2])
+
     def individual_stock(self, index=1):
-        print(
-            "Algo_Regression().individual_stock() --> {} since {}".format(self.stock_name, self.dates[0]))
+        if self.IF_DEBUG:
+            print("Algo_Regression().individual_stock() --> {} since {}".format(self.stock_name, self.dates[0]))
+
         self.map_options_to_methods()
-        self.draw_png()
+
+        self.price_ax.set_title("{}".format(self.option_title.rstrip()), loc="left")
+
+        self.draw_price(self.price_ax)
+        self.draw_ma(self.ma_ax_1, self.ma34, 'orange')  # orange for ma34
+        self.draw_ma(self.ma_ax_2, self.ma13, 'blue')  # blue for ma13
 
         for index_i in range(len(self.dates)):
             if (not self._if_all_stock):
@@ -71,10 +101,14 @@ class Algo_Regression:
             if (self._if_all_stock):
                 if self._should(index_i, self.sell_methods_and, self.sell_methods_or):
                     self._sell(index_i)
+
+        _money = "{:.2f}".format(self._money + self._stock_amount*self.prices[-1])
+        _hold = "{:.2f}".format(self.prices[-1]*10000/self.prices[0])
+        _percent = int(float(_money)*100/float(_hold))
         print(
-            "Algo_Regression() --> {} since {} for {} days, hold stock today: {}, deals {} times, worth ${}, buy_and_hold would be: ${}\n".format(self.stock_name, self.dates[0], len(self.dates), self._if_all_stock, self._transactions, "{:.2f}".format(self._money + self._stock_amount*self.prices[-1]), "{:.2f}".format(self.prices[-1]*10000/self.prices[0])))
-        pyplot.title("overall:${:.2f}\nbuy_hold:${:.2f}".format(self._money + self._stock_amount *
-                                                                self.prices[-1], self.prices[-1]*10000/self.prices[0]), loc="right")
+            "Algo_Regression() --> {} since {} for {} days\thold stock today: {}\tdeals {} times\n  WORTH ${}\tbuy_hold ${}\t{}%"
+            .format(self.stock_name, self.dates[0], len(self.dates), self._if_all_stock, self._transactions, _money, _hold, _percent))
+        self.price_ax.set_title("overall:${} \nbuy_hold:${} \npercent:{}%".format(_money, _hold, _percent), loc="right")
         self.save_png(index)
 
     def _should(self, i, methods_and, methods_or):
@@ -99,7 +133,9 @@ class Algo_Regression:
             self._money = self._money - self._stock_amount*_price
             self._if_all_stock = True
             self._transactions += 1
-            pyplot.axvline(x=i, ymin=0, ymax=_price/self.max_price, linewidth=2, color='green')
+            self.price_ax.axvline(x=i, ymin=0, ymax=_price/self.max_price, linewidth=2, color='green')
+            self.ma_ax_1.axvline(x=i, ymin=0, ymax=1, linewidth=1, color='green')
+            self.ma_ax_2.axvline(x=i, ymin=0, ymax=1, linewidth=1, color='green')
             # pyplot.text(i, self.min_price, "{}".format(_price), weight='bold', c='g')
             if self.IF_DEBUG:
                 print("  --BUY  at {}, price {}, for {} stocks, money left {}".format(
@@ -111,8 +147,10 @@ class Algo_Regression:
             self._money = self._money + self._stock_amount * _price - self._dealer_fee
             self._stock_amount = 0
             self._if_all_stock = False
-            pyplot.axvline(x=i, ymin=0, ymax=_price/self.max_price, linewidth=2, color='red')
-            pyplot.text(i, self.max_price, "${:.2f}".format(self._money), weight='bold', c='red')
+            self.price_ax.axvline(x=i, ymin=0, ymax=_price/self.max_price, linewidth=2, color='red')
+            self.price_ax.text(i, self.max_price, "${:.2f}".format(self._money), weight='bold', c='red')
+            self.ma_ax_1.axvline(x=i, ymin=0, ymax=1, linewidth=1, color='red')
+            self.ma_ax_2.axvline(x=i, ymin=0, ymax=1, linewidth=1, color='red')
             if self.IF_DEBUG:
                 print("  --SELL at {}, price {}, money got {}".format(
                     self.dates[i], "{:.2f}".format(_price), "{:.2f}".format(self._money)))
@@ -123,47 +161,61 @@ class Algo_Regression:
     def lessthan(self, i, list_a, list_b, percentage=0):
         return list_a[i] <= list_b[i]*(1-percentage/100)
 
-    def draw_png(self):
-        params = {'legend.fontsize': 'medium',
-                  'legend.title_fontsize': 'x-large',
-                  'figure.figsize': (20, 10),
-                  'axes.labelsize': 'x-large',
-                  'axes.titlesize': 'x-large',
-                  'axes.facecolor': self.subplotcolor,
-                  'figure.facecolor': self.backcolor,
-                  'font.family': 'sans-serif',
-                  'font.sans-serif': ['Microsoft YaHei'],  # you need to point to a font in C:\Windows\Fonts
-                  }
-        pyplot.rcParams.update(params)
-        pyplot.title("{}{} - {}".format(self.stock_name, self.cn_name, self.latest_date), loc="center")
-        pyplot.title("{}".format(self.option_title), loc="left")
+    def draw_price(self, ax):
+        ax.set_title("{}{} - {}".format(self.stock_name, self.cn_name, self.latest_date))
+        ax.plot(self.prices, color='black', label='price')
+        ax.plot(self.ma3, color='green', linestyle='dashed', label='ma3')
+        ax.plot(self.ma13, color='blue', linestyle='dashed', label='ma13')
+        ax.plot(self.ma34, color='red', linestyle='dashed', label='ma34')
 
-        pyplot.plot(self.prices, color='black', label='price')
-        pyplot.plot(self.ma3, color='green', linestyle='dashed', label='ma3')
-        pyplot.plot(self.ma13, color='blue', linestyle='dashed', label='ma13')
-        pyplot.plot(self.ma34, color='red', linestyle='dashed', label='ma34')
+        ax.legend(loc='upper left', bbox_to_anchor=[0, 1], shadow=True)
 
-        pyplot.legend(loc='upper left', bbox_to_anchor=[0, 1], shadow=True)
+    def draw_ma(self, ax, ma_list, face_color):
+        list_len = len(self.prices)
+        ar = np.arange(0, list_len, 1)
+
+        diff_list = [(self.prices[i]-ma_list[i])*100/self.prices[i] for i in range(list_len)]
+
+        _diff_sorted = sorted(diff_list)
+        _lower = max(_diff_sorted[0: math.ceil(list_len*self.top_n/100)])
+        lower_array = np.full((list_len), _lower)
+        _higher = min(_diff_sorted[math.floor(list_len*(100-self.top_n)/100):])
+        higher_array = np.full((list_len), _higher)
+        diff_array = np.array(diff_list)
+
+        ax.set_title('10% of ma_diff')
+        ax.xaxis.set_visible(False)
+        ax.plot(diff_array, color=face_color)
+        ax.text(list_len, _lower, "{:.2f}".format(_lower), fontsize=12)
+        ax.text(list_len, _higher, "{:.2f}".format(_higher), fontsize=12)
+        ax.fill_between(ar, diff_array, higher_array, where=(diff_array >= higher_array),
+                        interpolate=True, facecolor='red', alpha=0.75)
+        ax.fill_between(ar, diff_array, lower_array, where=(diff_array <= lower_array),
+                        interpolate=True, facecolor='green', alpha=0.75)
 
     def save_png(self, index):
         pyplot.savefig("./analyze/reg_{}_{}.png".format(self.stock_name, index))
-        pyplot.close()
+        pyplot.close(self.fig)
 
     def map_options_to_methods(self):
         """
         use python map to get func and parameter methods from options which is in string form
         """
         if len(self.buy_options_and) > 0:
-            print("  BUY_option_and:  {}".format(self.buy_options_and))
+            if self.IF_DEBUG:
+                print("  BUY_option_and:  {}".format(self.buy_options_and))
             self.option_title += "BUY_option_and: {}\n".format(self.buy_options_and)
         if len(self.buy_options_or) > 0:
-            print("  BUY_option_or:   {}".format(self.buy_options_or))
+            if self.IF_DEBUG:
+                print("  BUY_option_or:   {}".format(self.buy_options_or))
             self.option_title += "BUY_option_or: {}\n".format(self.buy_options_or)
         if len(self.sell_options_and) > 0:
-            print("  SELL_option_and: {}".format(self.sell_options_and))
+            if self.IF_DEBUG:
+                print("  SELL_option_and: {}".format(self.sell_options_and))
             self.option_title += "SELL_option_and: {}\n".format(self.sell_options_and)
         if len(self.sell_options_or) > 0:
-            print("  SELL_option_or:  {}".format(self.sell_options_or))
+            if self.IF_DEBUG:
+                print("  SELL_option_or:  {}".format(self.sell_options_or))
             self.option_title += "SELL_option_or: {}\n".format(self.sell_options_or)
 
         for temp_list in self.buy_options_and:
@@ -186,18 +238,18 @@ def run(market="US", start_date='2013-12-01'):
 
     table_list = [i for i in tables if i.startswith(market)]
     options_lists = [
-        [["bulls_greaterthan_zeros_0", "indexbulls_greaterthan_zeros_0"],
-            [], ["bulls_lessthan_zeros_0", "indexbulls_lessthan_zeros_0"], []],
-        [["bulls_greaterthan_zeros_0", "indexbulls_greaterthan_zeros_0"],
-            [], ["indexbulls_lessthan_zeros_0"], []],
-        [["bulls_greaterthan_zeros_0", "prices_lessthan_ma13_10"],
-            [], [], ["prices_greaterthan_ma13_10"]],
-        [["prices_lessthan_ma13_10"],
-            [], [], ["prices_greaterthan_ma13_10"]],
+        [["prices_lessthan_ma34_5", "indexbulls_greaterthan_zeros_0"],
+            [], [], ["prices_greaterthan_ma34_20", "indexbulls_lessthan_zeros_0"]],
+        [["prices_lessthan_ma34_10", "indexbulls_greaterthan_zeros_0"],
+            [], [], ["prices_greaterthan_ma34_25", "indexbulls_lessthan_zeros_0"]],
+        [["prices_lessthan_ma13_10", "indexbulls_greaterthan_zeros_0"],
+            [], [], ["prices_greaterthan_ma13_15", "indexbulls_lessthan_zeros_0"]],
+        [["prices_lessthan_ma13_10", "indexbulls_greaterthan_zeros_0"],
+            [], [], ["prices_greaterthan_ma13_20", "indexbulls_lessthan_zeros_0"]],
     ]
 
     for i in table_list:
-        for option_list in options_lists:
+        for index, option_list in enumerate(options_lists, start=1):
             d = Algo_Regression(i,
                                 buy_options_and=option_list[0],
                                 buy_options_or=option_list[1],
@@ -205,15 +257,13 @@ def run(market="US", start_date='2013-12-01'):
                                 sell_options_or=option_list[3],
                                 start_date=start_date
                                 )
-            d.individual_stock()
+            d.individual_stock(index=index)
 
 
 def regression_dryrun(stock_name, start_date='2010-01-01'):
     options_lists = [
-        [["prices_lessthan_ma34_5"],
-            [], [], ["prices_greaterthan_ma34_20"]],
-        [["prices_lessthan_ma34_10"],
-            [], [], ["prices_greaterthan_ma34_25"]],
+        [["ma34_lessthan_ma13_0"],
+            [], [], ["ma34_greaterthan_ma13_0"]],
     ]
 
     for index, option_list in enumerate(options_lists, start=1):
@@ -229,6 +279,7 @@ def regression_dryrun(stock_name, start_date='2010-01-01'):
 
 if __name__ == "__main__":
     regression_dryrun('US_TDOC', '2019-06-01')
-    # regression_dryrun('US_TSLA', '2019-06-01')
-    # regression_dryrun('US_PDD', '2019-06-01')
-    # regression_dryrun('US_SQ', '2019-06-01')
+    regression_dryrun('US_TSLA', '2019-06-01')
+    regression_dryrun('US_PDD', '2019-06-01')
+    regression_dryrun('US_SQ', '2019-06-01')
+    # run(market="US", start_date='2019-06-01')

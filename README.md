@@ -35,6 +35,7 @@ created by liulirun@gmail.com at Dec.2020
 - **/analyze/**: generate daily png and other algos. 
     - **draw.py**: draw png for daily stock, including 21 days and 2 years price/vols. Also Gaussian KDE density for 2 years.
     - **algo_daily.py**: daily stock analyze.
+    - **algo_regression.py**: regression to see profit.
 - **/tests/**: test files. Do not forget the best practice is Continuous Testing.
 
 

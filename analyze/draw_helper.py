@@ -18,7 +18,7 @@ class DrawHelper():
         self.ma34 = [float(t[5]) for t in stock_tuple]
         self.bull_list = [t[6] for t in stock_tuple]
         self.latest_date = str(stock_tuple[-1][0])
-        self.subplotcolor = "#E8DC70"  # yellow ish
+        self.subplotcolor = "#cc9918"  # yellow ish
         self.backcolor = "#999a88"  # grey
 
     def run(self):
