@@ -1,7 +1,7 @@
 #credentials
 credential/cred.py
 
-TODO.txt
+TODO.md
 supported_tickers.csv
 
 #VScode
@@ -13,7 +13,8 @@ data/*.json
 
 # files in analyze folder
 analyze/sample.py
-analyze/*.png
+analyze/daily_result/*.png
+analyze/regression_result/*.png
 
 #mysqlredential data
 mysql/mysql_data/*

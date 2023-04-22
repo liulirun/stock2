@@ -29,7 +29,7 @@ class Algo_Daily:
         stock_tuple = result[::-1]
         cn_name = self.db_helper.current_stock_cn_name(table_name)
 
-        draw_png = DrawHelper(table_name, stock_tuple, cn_name)
+        draw_png = DrawHelper(table_name, stock_tuple, cn_name, "daily_result")
         draw_png.run()
 
 

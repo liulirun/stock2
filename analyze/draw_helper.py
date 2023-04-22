@@ -6,10 +6,11 @@ from scipy.stats import gaussian_kde
 
 
 class DrawHelper():
-    def __init__(self, stock_name, stock_tuple, cn_name=''):
+    def __init__(self, stock_name, stock_tuple, cn_name='', sub_folder='daily_result'):
         self.IF_DEBUG = False
         self.stock_name = stock_name
         self.cn_name = cn_name
+        self.sub_folder = sub_folder
         self.date_list = [str(t[0]) for t in stock_tuple]
         self.price_list = [float(t[1]) for t in stock_tuple]
         self.vol_list = [int(t[2]) for t in stock_tuple]
@@ -44,11 +45,11 @@ class DrawHelper():
         self.draw_price(grid_specs[2], grid_specs[3])
         self.draw_vol(grid_specs[4], grid_specs[5])
 
-        pyplot.savefig("./analyze/{}.png".format(self.stock_name))
+        pyplot.savefig(f"./analyze/{self.sub_folder}/{self.stock_name}.png")
         pyplot.close(fig)
 
         if self.IF_DEBUG:
-            print("  DrawHelper().run() --> {} saved".format(self.stock_name))
+            print(f"  DrawHelper().run() --> {self.stock_name} saved")
 
     def draw_price(self, gs_left, gs_right):
         ax1 = pyplot.subplot(gs_left)
