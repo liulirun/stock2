@@ -4,10 +4,10 @@ from mysql.backup import Backup
 
 if __name__ == "__main__":
     print("1. insert to mysql DB")
-    stock.run()
+    # stock.run()
 
-    print("2. push mysql DB to docker hub")
-    Backup().run()
+    # print("2. push mysql DB to docker hub")
+    # Backup().run()
 
     print("3. generate daily png")
     c = Algo_Daily()

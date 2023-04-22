@@ -1,6 +1,7 @@
 from time import time
 
 import requests
+
 from data.json_helper import JsonHelper
 from data.stock_data_helper import StockDataHelper
 
@@ -11,7 +12,10 @@ class Indexhub:
         self.market = market
         self.start_timestamp = start_timestamp
         self.end_timestamp = end_timestamp
-
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
+            }
+        
     def run(self):
         index_bytes = self.download_candle()
         stock_dict = self.convert_candle_data(index_bytes)
@@ -22,14 +26,12 @@ class Indexhub:
             return "https://query1.finance.yahoo.com/v7/finance/download/000001.SS?period1={}&period2={}&interval=1d&events=history&includeAdjustedClose=true".format(
                 self.start_timestamp, self.end_timestamp)
         else:
-            return "https://query1.finance.yahoo.com/v7/finance/download/%5EIXIC?period1={}&period2={}&interval=1d&events=history&includeAdjustedClose=true".format(
-                self.start_timestamp, self.end_timestamp)
+            return "https://query1.finance.yahoo.com/v7/finance/download/^IXIC?period1={}&period2={}&interval=1d&events=history&includeAdjustedClose=true".format(self.start_timestamp, self.end_timestamp)
 
     def download_candle(self):
         url = self._price_url()
         try:
-            index_bytes = requests.get(url).content
-
+            index_bytes = requests.get(url, headers=self.headers).content
             if(self.IF_DEBUG):
                 print("  download_candle()--> downloaded {} ".format(self.market))
             return index_bytes
