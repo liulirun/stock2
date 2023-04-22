@@ -8,7 +8,7 @@ class Backup:
 
     def run(self):
         self.backup_mysql()
-        self.push_mysql_image()
+        # self.push_mysql_image()
 
     def backup_mysql(self, container_name="mysql-stock2"):
         for container in self.docker_client.containers.list():
