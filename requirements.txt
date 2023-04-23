@@ -1,0 +1,5 @@
+###### Requirements without Version Specifiers ######
+requests
+pandas
+
+###### Requirements with Version Specifiers ######

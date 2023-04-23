@@ -1,7 +1,8 @@
 import unittest
-from datetime import date, datetime
+from datetime import date
 
 import mock
+
 from data.db_helper import DbHelper
 
 

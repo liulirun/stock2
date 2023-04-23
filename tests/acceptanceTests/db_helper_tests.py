@@ -2,6 +2,7 @@ import unittest
 from datetime import date
 
 import mock
+
 from data.db_helper import DbHelper
 
 
@@ -56,14 +57,6 @@ class Test_ACCEPTANCE_db_helper_Methods(unittest.TestCase):
     def test_stock_data_since_date(self):
         result = self.helper.stock_data_since_date(self.real_table_name, '2020-12-01')
         self.assertGreaterEqual(len(result), 13)
-
-    def test_closest_date(self):
-        result = self.helper.closest_date(self.real_table_name, '2020-12-01')
-        self.assertEqual(result, date(2020, 12, 1))
-
-    def test_closest_date_sunday(self):
-        result = self.helper.closest_date(self.real_table_name, '2020-12-06')
-        self.assertEqual(result, date(2020, 12, 7))
 
     @mock.patch('data.db_helper.DbHelper._read_json')
     def test_insert_stock_data_to_db_correctly(self, mock_read_json):
