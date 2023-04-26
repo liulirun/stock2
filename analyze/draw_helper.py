@@ -96,7 +96,7 @@ class DrawHelper():
         density.covariance_factor = lambda: .1
         density._compute_covariance()
 
-        ax1.plot(xs, density(xs), color=self.backcolor)
+        ax1.plot(xs, density(xs), color='blue')
         ax1.scatter(self.price_list[-1], 0.0025, s=50, color='red')
 
 

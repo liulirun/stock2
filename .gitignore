@@ -9,7 +9,7 @@ supported_tickers.csv
 
 # files in data folder
 data/sample.py
-data/*.json
+data/json/*.json
 
 # files in analyze folder
 analyze/sample.py

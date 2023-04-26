@@ -2,6 +2,7 @@ import sys
 from datetime import date, datetime
 
 import MySQLdb as db
+
 from credential import cred
 from data.json_helper import JsonHelper
 
@@ -217,8 +218,8 @@ class DbHelper:
         result = self._fetch_all(_query)
         return result
 
-    def stock_data_since_date(self, table_name, date):
-        _query = "SELECT * FROM stock.{} where stock_date >= '{}' ORDER BY stock_date ASC;".format(table_name, date)
+    def stock_data_since_date(self, table_name, start_date, end_date=date.today()):
+        _query = "SELECT * FROM stock.{} where stock_date >= '{}' and stock_date <= '{}' ORDER BY stock_date ASC;".format(table_name, start_date, end_date)
         result = self._fetch_all(_query)
         return result
 

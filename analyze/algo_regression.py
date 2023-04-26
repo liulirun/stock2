@@ -1,10 +1,12 @@
 import math
+from datetime import date
 from operator import methodcaller
 
 import matplotlib
 import numpy as np
-from data.db_helper import DbHelper
 from matplotlib import gridspec, pyplot
+
+from data.db_helper import DbHelper
 
 matplotlib.use('Agg')
 
@@ -15,7 +17,7 @@ class Algo_Regression:
     buy_options_or,  sell_options_or:  one condition have to be met
     """
 
-    def __init__(self, stock_name, buy_options_and, buy_options_or, sell_options_and, sell_options_or, start_date, cn_name=''):
+    def __init__(self, stock_name, buy_options_and, buy_options_or, sell_options_and, sell_options_or, start_date, end_date, cn_name=''):
         self.IF_DEBUG = False
         self.top_n = 10
         self.stock_name = stock_name
@@ -29,7 +31,7 @@ class Algo_Regression:
         self.sell_methods_and = []
         self.sell_methods_or = []
 
-        self.stock_tuple = DbHelper().stock_data_since_date(self.stock_name, start_date)
+        self.stock_tuple = DbHelper().stock_data_since_date(self.stock_name, start_date, end_date)
         self.dates = [str(t[0]) for t in self.stock_tuple]
         self.prices = [float(t[1]) for t in self.stock_tuple]
         self.vols = [int(t[2]) for t in self.stock_tuple]
@@ -44,7 +46,7 @@ class Algo_Regression:
         self.option_title = ""
 
         self.index_name = 'US_INDEX' if self.stock_name.startswith('US') else 'CN_INDEX'
-        self.index_tuple = DbHelper().stock_data_since_date(self.index_name, start_date)
+        self.index_tuple = DbHelper().stock_data_since_date(self.index_name, start_date, end_date)
         self.index_dates_pre = [str(t[0]) for t in self.index_tuple]
         self.index_bulls_pre = [t[6] for t in self.index_tuple]
         self.indexdates = [self.index_dates_pre[index]
@@ -106,16 +108,16 @@ class Algo_Regression:
         _hold = "{:.2f}".format(self.prices[-1]*10000/self.prices[0])
         _percent = int(float(_money)*100/float(_hold))
         print(
-            "Algo_Regression() --> {} since {} for {} days\thold stock today: {}\tdeals {} times\n  WORTH ${}\tbuy_hold ${}\t{}%"
-            .format(self.stock_name, self.dates[0], len(self.dates), self._if_all_stock, self._transactions, _money, _hold, _percent))
-        self.price_ax.set_title("overall:${} \nbuy_hold:${} \npercent:{}%".format(_money, _hold, _percent), loc="right")
+            "\n\n{} for {} days\n  still has stock today: {}\tdeals {} times\n  strategy ${}\tbuy_hold ${}\tstrategy/buy_hold:{} times"
+            .format(self.stock_name, len(self.dates), self._if_all_stock, self._transactions, _money, _hold, _percent/100))
+        self.price_ax.set_title("start:$10000.00\nstrategy:${}\nbuy_hold:${}\nstrategy/buy_hold:{}%".format(_money, _hold, _percent), loc="right")
         self.save_png(index)
 
     def _should(self, i, methods_and, methods_or):
         if (methods_and == [] and methods_or == []):
             return False
         for method_list in methods_and:
-            # use python eval to run func using parameter from string form in methods.
+            # use python eval to  func using parameter from string form in methods.
             if (not eval("{}({},{},{},{})".format(method_list[1], i, method_list[0], method_list[2], method_list[3]))):
                 return False
         if methods_or == []:
@@ -133,7 +135,7 @@ class Algo_Regression:
             self._money = self._money - self._stock_amount*_price
             self._if_all_stock = True
             self._transactions += 1
-            self.price_ax.axvline(x=i, ymin=0, ymax=_price/self.max_price, linewidth=2, color='green')
+            self.price_ax.axvline(x=i, ymin=0, ymax=_price/self.max_price, linewidth=1, color='green')
             self.ma_ax_1.axvline(x=i, ymin=0, ymax=1, linewidth=1, color='green')
             self.ma_ax_2.axvline(x=i, ymin=0, ymax=1, linewidth=1, color='green')
             # pyplot.text(i, self.min_price, "{}".format(_price), weight='bold', c='g')
@@ -147,8 +149,8 @@ class Algo_Regression:
             self._money = self._money + self._stock_amount * _price - self._dealer_fee
             self._stock_amount = 0
             self._if_all_stock = False
-            self.price_ax.axvline(x=i, ymin=0, ymax=_price/self.max_price, linewidth=2, color='red')
-            self.price_ax.text(i, self.max_price, "${:.2f}".format(self._money), weight='bold', c='red')
+            self.price_ax.axvline(x=i, ymin=0, ymax=_price/self.max_price, linewidth=1, color='red')
+            self.price_ax.text(i, self.max_price, "${:.2f}".format(self._money), weight='bold', c='black')
             self.ma_ax_1.axvline(x=i, ymin=0, ymax=1, linewidth=1, color='red')
             self.ma_ax_2.axvline(x=i, ymin=0, ymax=1, linewidth=1, color='red')
             if self.IF_DEBUG:
@@ -194,7 +196,7 @@ class Algo_Regression:
                         interpolate=True, facecolor='green', alpha=0.75)
 
     def save_png(self, index):
-        pyplot.savefig("./analyze/reg_{}_{}.png".format(self.stock_name, index))
+        pyplot.savefig("./analyze/regression_result/reg_{}_{}.png".format(self.stock_name, index))
         pyplot.close(self.fig)
 
     def map_options_to_methods(self):
@@ -228,7 +230,7 @@ class Algo_Regression:
             self.sell_methods_or.append([int(s) if s.isdigit() else 'self.'+s for s in temp_list])
 
 
-def run(market="US", start_date='2013-12-01'):
+def combine_run(market="US", start_date='2022-01-01', end_date=date.today()):
     db_helper = DbHelper()
     tables = db_helper.get_all_tables()
 
@@ -255,15 +257,16 @@ def run(market="US", start_date='2013-12-01'):
                                 buy_options_or=option_list[1],
                                 sell_options_and=option_list[2],
                                 sell_options_or=option_list[3],
-                                start_date=start_date
+                                start_date=start_date, 
+                                end_date=end_date
                                 )
             d.individual_stock(index=index)
 
 
-def regression_dryrun(stock_name, start_date='2010-01-01'):
+def regression_dryrun(stock_name, start_date='2010-01-01', end_date=date.today()):
     options_lists = [
-        [["ma34_lessthan_ma13_0"],
-            [], [], ["ma34_greaterthan_ma13_0"]],
+        [["prices_greaterthan_ma34_0"],
+            [], [], ["prices_lessthan_ma34_0"]],
     ]
 
     for index, option_list in enumerate(options_lists, start=1):
@@ -272,14 +275,16 @@ def regression_dryrun(stock_name, start_date='2010-01-01'):
                             buy_options_or=option_list[1],
                             sell_options_and=option_list[2],
                             sell_options_or=option_list[3],
-                            start_date=start_date
+                            start_date=start_date,
+                            end_date=end_date
                             )
         d.individual_stock(index=index)
 
 
 if __name__ == "__main__":
-    regression_dryrun('US_TDOC', '2019-06-01')
-    regression_dryrun('US_TSLA', '2019-06-01')
-    regression_dryrun('US_PDD', '2019-06-01')
-    regression_dryrun('US_SQ', '2019-06-01')
-    # run(market="US", start_date='2019-06-01')
+    # for i in ['US_NIU']:
+    for i in ['US_LABU', 'US_QQQ', 'US_UPST', 'US_PDD', 'US_TSLA', 'US_NIU']:
+        # (i, start_date='2022-01-01')
+        # regression_dryrun(i, start_date='2020-02-10', end_date='2022-02-20')
+        combine_run(i, start_date='2020-02-10', end_date='2022-02-20')
+    

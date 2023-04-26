@@ -8,17 +8,18 @@ class JsonHelper:
     """
 
     def __init__(self):
-        self.IF_DEBUG = False
+        self.debug = False
+        self.json_path = './data/json'
 
     def read_json(self, stock_name):
         """
         read local json file, which has looks like 
         dict{'c': self.price_list, 'v': self.vol_list, 'date': self.date_list}
         """
-        with open("./data/{}.json".format(stock_name)) as json_file:
+        with open(f"{self.json_path}/{stock_name}.json") as json_file:
             json_data = json.load(json_file)
-            if self.IF_DEBUG:
-                print("  JsonHelper.read_json() --> read ./data/{}.json success".format(stock_name))
+            if self.debug:
+                print(f"  JsonHelper.read_json() --> read {self.json_path}/{stock_name}.json success")
         return json_data
 
     def save_json(self, stock_name, stock_dict, market):
@@ -34,10 +35,10 @@ class JsonHelper:
                      'sp':split_list
                      }
         """
-        with open("./data/{}_{}.json".format(market, stock_name), 'w') as f:
+        with open(f"{self.json_path}/{market}_{stock_name}.json", 'w') as f:
             json.dump(stock_dict, f)
-            if self.IF_DEBUG:
-                print("  JsonHelper.save_json() --> save ./data/{}_{}.json success".format(market, stock_name))
+            if self.debug:
+                print(f"  JsonHelper.save_json() --> save {self.json_path}/{market}_{stock_name}.json success")
 
 
 if __name__ == "__main__":
