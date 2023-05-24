@@ -32,6 +32,7 @@ class StockDataHelper:
             return [-1 for i in price_list]
 
         first_list = [-1 for i in range(0, self.BULL_INTERVAL)]
+        #if cur price > price_60_days_ago, then bull
         second_list = [1 if price_list[i] >= price_list[i-self.BULL_INTERVAL]
                        else 0 for i in range(self.BULL_INTERVAL, len(price_list))]
         bull_list = first_list + second_list

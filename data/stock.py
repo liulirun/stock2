@@ -18,7 +18,7 @@ def run():
         indexhub.run()
         db_helper.run("{}_{}".format(market, "INDEX"))
 
-    US_lists = ['QQQ', 'SQ', 'TSLA', 'PDD','LABU', 'NIU', 'UPST', 'BABA', 'YANG', 'YINN', 'TTD', 'NET', 'COST']
+    US_lists = ['QQQ', 'SQ', 'TSLA', 'PDD','LABU', 'NIU', 'UPST', 'BABA', 'YANG', 'YINN', 'TTD', 'NET', 'COST', 'GOOG', 'GTLB', 'UBER']
     for stock_name in US_lists:
         apihub.run(stock_name, market='US')
         db_helper.run("US_{}".format(stock_name))

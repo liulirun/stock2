@@ -263,10 +263,10 @@ def combine_run(market="US", start_date='2022-01-01', end_date=date.today()):
             d.individual_stock(index=index)
 
 
-def regression_dryrun(stock_name, start_date='2010-01-01', end_date=date.today()):
+def regression_dryrun(stock_name, start_date='2020-01-01', end_date=date.today()):
     options_lists = [
-        [["prices_greaterthan_ma34_0"],
-            [], [], ["prices_lessthan_ma34_0"]],
+        [["indexbulls_greaterthan_zeros_0"],
+            [], [], ["indexbulls_lessthan_zeros_0"]],
     ]
 
     for index, option_list in enumerate(options_lists, start=1):
@@ -285,6 +285,6 @@ if __name__ == "__main__":
     # for i in ['US_NIU']:
     for i in ['US_LABU', 'US_QQQ', 'US_UPST', 'US_PDD', 'US_TSLA', 'US_NIU']:
         # (i, start_date='2022-01-01')
-        # regression_dryrun(i, start_date='2020-02-10', end_date='2022-02-20')
-        combine_run(i, start_date='2020-02-10', end_date='2022-02-20')
+        regression_dryrun(i, start_date='2020-02-10', end_date='2022-02-20')
+        # combine_run(i, start_date='2020-02-10', end_date='2022-02-20')
     
