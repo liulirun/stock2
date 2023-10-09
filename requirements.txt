@@ -1,5 +1,10 @@
 ###### Requirements without Version Specifiers ######
-requests
+pypiwin32
+mysqlclient
+scipy
+matplotlib
 pandas
 
 ###### Requirements with Version Specifiers ######
+requests == 2.28.1
+docker == 6.1.3
