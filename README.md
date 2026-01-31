@@ -19,8 +19,8 @@ created by liulirun@gmail.com at Dec.2020
 1. run ```pip install -r .\requirements.txt``` to install python dependency
 
 ### Docker
-
-1. install docker in your local
+1. install docker desktop in your local ( windows )
+1. login
 1. run `docker pull liulirun/mysql-stock2` from docker hub,
 1. run `docker compose up` from /mysql/ folder.
 

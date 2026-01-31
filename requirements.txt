@@ -1,10 +1,12 @@
 ###### Requirements without Version Specifiers ######
 pypiwin32
-mysqlclient
 scipy
 matplotlib
 pandas
-requests
 docker
+mysql-connector-python
+requests
+
+# mysqlclient
 
 ###### Requirements with Version Specifiers ######
