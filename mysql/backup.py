@@ -22,8 +22,8 @@ class Backup:
     def push_mysql_image(self, image_name="liulirun/mysql-stock2"):
         container = self.client.containers.get('mysql-stock2')
         container.commit('mysql-stock2', tag='latest')
-        # for line in self.client.images.push(image_name, tag='latest', stream=True, decode=True):
-        #     print(line)
+        for line in self.client.images.push(image_name, tag='latest', stream=True, decode=True):
+            print(line)
         print('docker updated')
 
 if __name__ == "__main__":
