@@ -4,7 +4,7 @@ mysqlclient
 scipy
 matplotlib
 pandas
+requests
+docker
 
 ###### Requirements with Version Specifiers ######
-requests == 2.28.1
-docker == 6.1.3

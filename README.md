@@ -12,7 +12,13 @@ created by liulirun@gmail.com at Dec.2020
 3. analyze the stock data based on MySQL data
 4. do regression, find pattern, etc
 
-<h2>Install</h2>
+## Installation Guide
+### Python in local windows computer
+1. install python 3.13
+1. install python .venv under stock2
+1. run ```pip install -r .\requirements.txt``` to install python dependency
+
+### Docker
 
 1. install docker in your local
 2. run `docker pull liulirun/mysql-stock2` from docker hub,
