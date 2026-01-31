@@ -1,0 +1,15 @@
+version: '3.6'
+
+services:
+  mysql:
+    container_name: mysql-stock2
+    restart: always
+    image: liulirun/mysql-stock2:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 'mysql_pass'
+      MYSQL_USER: 'stock2'
+      MYSQL_PASS: 'pass'
+    volumes:
+    - ./mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"

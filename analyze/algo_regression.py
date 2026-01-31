@@ -3,6 +3,7 @@ from datetime import date
 from operator import methodcaller
 
 import matplotlib
+matplotlib.use(backend="Agg")
 import numpy as np
 from matplotlib import gridspec, pyplot
 
@@ -287,4 +288,3 @@ if __name__ == "__main__":
         # (i, start_date='2022-01-01')
         regression_dryrun(i, start_date='2020-02-10', end_date='2022-02-20')
         # combine_run(i, start_date='2020-02-10', end_date='2022-02-20')
-    

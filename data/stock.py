@@ -1,36 +1,39 @@
-from data.api_hub import Apihub
+import os
+from data.fetch_stock_data_from_api import ApiFetch
 from data.db_helper import DbHelper
-from data.index_hub import Indexhub
+from data.const import *
 
 
-# logic: download from apihub,handles json,save to MYSQL DB,and save json file
 def run():
     """
-    Entrance for data folder.
-    Insert TICK data into Mysql.
+    Entrance for data folder, Insert TICK data into Mysql.
+    logic:
+        -. download index ( US uses SPY, China TBD) -- this is used for later determine a market is bull or bear
+        -. download stock
+        -. create json,
+        -. save to MYSQL DB,
+        -. and save json file
     """
-    apihub = Apihub()
+    set_debug_option()
+    apiFetch = ApiFetch()
     db_helper = DbHelper()
 
-    market_lists = ['US','CN']
-    for market in market_lists:
-        indexhub = Indexhub(market=market)
-        indexhub.run()
-        db_helper.run("{}_{}".format(market,"INDEX"))
+    # apiFetch.fetch_and_save_to_json(stock_name="", if_index=True)
+    # db_helper.save_stock_to_database(table_name="US_{}".format("INDEX"))
 
-    US_lists = ['LABU','QQQ','SQ','TSLA','PDD','NIU',
-                'UPST','BABA','YANG','YINN','COST',
-                'GTLB','UBER','FNGU','SPY','TNA','IWM',
-                'CRWD','ZS','VRT','NVDL','TSLL','SYM']
-    for stock_name in US_lists:
-        apihub.run(stock_name,market='US')
-        db_helper.run("US_{}".format(stock_name))
+    for stock_name in US_STOCK_LISTS:
+        apiFetch.fetch_and_save_to_json(stock_name=stock_name)
+        db_helper.save_stock_to_database(table_name="US_{}".format(stock_name))
 
-    CN_dicts = {'002230': u'科大讯飞','300552': u'万集科技','300015': u'爱尔眼科',
-                '600660': u'福耀玻璃','002038': u'双鹭药业','603288': u'海天味业'}
-    for stock_name in CN_dicts.keys():
-        apihub.run(stock_name,market='CN')
-        db_helper.run("CN_{}".format(stock_name),CN_dicts[stock_name])
+    # disable CN for now, #TODO
+    # for stock_name in CN_STOCK_DICTS.keys():
+    #     apiFetch.fetch_and_save_to_json(stock_name, market="CN")
+    #     db_helper.save_stock_to_database("CN_{}".format(stock_name), CN_dicts[stock_name])
+
+
+def set_debug_option():
+    os.environ[DEBUG_PRINT] = DEBUG_PRINT_TRUE
+    os.environ[DEBUG_FAKE_API] = DEBUG_FAKE_API_FALSE
 
 
 def clean_up_old_DB():

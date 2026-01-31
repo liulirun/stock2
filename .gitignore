@@ -1,14 +1,10 @@
 #credentials
 credential/cred.py
 
-TODO.md
-supported_tickers.csv
-
 #VScode
 .VScode/
 
 # files in data folder
-data/sample.py
 data/json/*.json
 
 # files in analyze folder
@@ -17,6 +13,9 @@ analyze/daily_result/*.png
 analyze/regression_result/*.png
 
 #mysqlredential data
+stockDB/mysql_data/*
+!stockDB/mysql_data/bk_stock.sql
+stockDB/Dockerfile.bk
 mysql/mysql_data/*
 !mysql/mysql_data/bk_stock.sql
 
@@ -55,9 +54,6 @@ MANIFEST
 *.manifest
 *.spec
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
@@ -150,5 +146,23 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-mysql/Dockerfile.bk
 bash.exe.stackdump
+stockDB/mysql_data/#ib_16384_0.dblwr
+stockDB/mysql_data/binlog.index
+stockDB/mysql_data/ib_logfile0
+stockDB/mysql_data/ib_logfile1
+stockDB/mysql_data/ibdata1
+stockDB/mysql_data/ibtmp1
+stockDB/mysql_data/mysql.ibd
+stockDB/mysql_data/undo_001
+stockDB/mysql_data/undo_002
+stockDB/mysql_data/#innodb_temp/temp_1.ibt
+stockDB/mysql_data/#innodb_temp/temp_2.ibt
+stockDB/mysql_data/#innodb_temp/temp_3.ibt
+stockDB/mysql_data/#innodb_temp/temp_4.ibt
+stockDB/mysql_data/#innodb_temp/temp_5.ibt
+stockDB/mysql_data/#innodb_temp/temp_6.ibt
+stockDB/mysql_data/#innodb_temp/temp_7.ibt
+stockDB/mysql_data/#innodb_temp/temp_8.ibt
+stockDB/mysql_data/#innodb_temp/temp_9.ibt
+stockDB/mysql_data/#innodb_temp/temp_10.ibt
