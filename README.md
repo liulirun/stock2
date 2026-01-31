@@ -21,13 +21,13 @@ created by liulirun@gmail.com at Dec.2020
 ### Docker
 
 1. install docker in your local
-2. run `docker pull liulirun/mysql-stock2` from docker hub,
-3. run `docker compose up` from /mysql/ folder.
-4. install python 3.11 and pip.
-5. pip install dependencies
-6. pull this repo
-7. rename /credential/example.py to cred.py
-8. run main.py
+1. run `docker pull liulirun/mysql-stock2` from docker hub,
+1. run `docker compose up` from /mysql/ folder.
+
+### run the code
+1. pull this repo
+1. create a to cred.py under /credential folder. 
+1. run main.py
 
 <h2>Design</h2>
 
