@@ -18,12 +18,12 @@ def run():
     apiFetch = ApiFetch()
     db_helper = DbHelper()
 
-    apiFetch.fetch_and_save_to_json(stock_name="", if_index=True)
-    db_helper.save_stock_to_database(table_name="US_{}".format("INDEX"))
+    # apiFetch.fetch_and_save_to_json(stock_name="", if_index=True)
+    # db_helper.save_stock_to_database(table_name="US_{}".format("INDEX"))
 
-    # for stock_name in US_STOCK_LISTS:
-    #     apiFetch.fetch_and_save_to_json(stock_name=stock_name)
-    #     db_helper.save_stock_to_database(table_name="US_{}".format(stock_name))
+    for stock_name in US_STOCK_LISTS:
+        apiFetch.fetch_and_save_to_json(stock_name=stock_name)
+        db_helper.save_stock_to_database(table_name="US_{}".format(stock_name))
 
     # disable CN for now, #TODO
     # for stock_name in CN_STOCK_DICTS.keys():

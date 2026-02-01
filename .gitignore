@@ -1,13 +1,10 @@
 #credentials
 credential/cred.py
 
-TODO.md
-
 #VScode
 .VScode/
 
 # files in data folder
-data/sample.py
 data/json/*.json
 
 # files in analyze folder
