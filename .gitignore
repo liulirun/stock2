@@ -2,7 +2,6 @@
 credential/cred.py
 
 TODO.md
-supported_tickers.csv
 
 #VScode
 .VScode/
@@ -17,6 +16,9 @@ analyze/daily_result/*.png
 analyze/regression_result/*.png
 
 #mysqlredential data
+stockDB/mysql_data/*
+!stockDB/mysql_data/bk_stock.sql
+stockDB/Dockerfile.bk
 mysql/mysql_data/*
 !mysql/mysql_data/bk_stock.sql
 
@@ -55,9 +57,6 @@ MANIFEST
 *.manifest
 *.spec
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
@@ -150,5 +149,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-mysql/Dockerfile.bk
 bash.exe.stackdump

@@ -12,25 +12,32 @@ def run():
     apihub = Apihub()
     db_helper = DbHelper()
 
-    market_lists = ['US','CN']
+    market_lists = ["US", "CN"]
     for market in market_lists:
         indexhub = Indexhub(market=market)
         indexhub.run()
-        db_helper.run("{}_{}".format(market,"INDEX"))
+        db_helper.run("{}_{}".format(market, "INDEX"))
 
-    US_lists = ['LABU','QQQ','SQ','TSLA','PDD','NIU',
-                'UPST','BABA','YANG','YINN','COST',
-                'GTLB','UBER','FNGU','SPY','TNA','IWM',
-                'CRWD','ZS','VRT','NVDL','TSLL','SYM']
+    # US_lists = ['LABU','QQQ','SQ','TSLA','PDD','NIU',
+    #             'UPST','BABA','YANG','YINN','COST',
+    #             'GTLB','UBER','FNGU','SPY','TNA','IWM',
+    #             'CRWD','ZS','VRT','NVDL','TSLL','SYM']
+    US_lists = ["SQ"]
     for stock_name in US_lists:
-        apihub.run(stock_name,market='US')
+        apihub.run(stock_name, market="US")
         db_helper.run("US_{}".format(stock_name))
 
-    CN_dicts = {'002230': u'科大讯飞','300552': u'万集科技','300015': u'爱尔眼科',
-                '600660': u'福耀玻璃','002038': u'双鹭药业','603288': u'海天味业'}
-    for stock_name in CN_dicts.keys():
-        apihub.run(stock_name,market='CN')
-        db_helper.run("CN_{}".format(stock_name),CN_dicts[stock_name])
+    # CN_dicts = {
+    #     "002230": "科大讯飞",
+    #     "300552": "万集科技",
+    #     "300015": "爱尔眼科",
+    #     "600660": "福耀玻璃",
+    #     "002038": "双鹭药业",
+    #     "603288": "海天味业",
+    # }
+    # for stock_name in CN_dicts.keys():
+    #     apihub.run(stock_name, market="CN")
+    #     db_helper.run("CN_{}".format(stock_name), CN_dicts[stock_name])
 
 
 def clean_up_old_DB():
