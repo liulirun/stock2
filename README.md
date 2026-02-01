@@ -32,9 +32,9 @@ created by liulirun@gmail.com at Dec.2020
 - **/credential/**: store credential data,tokens, password, etc.
 - **/stockDB/**: maintain mysql container which is runnning in local, including docker-compose, back up scripts.
 - **/data/**: for inserting stock data into mysql DB:
-  - **api_hub.py**: download data from api, generate stock data, then save to local .json.
+  - **fetch_stock_data_from_api.py**: download data from api, generate stock data, then save to local .json.
   - **db_helper.py**: mysql function as read local .json, insert stock_data to DB, fetch stock_data for future use.
-  - **stock_data_helper.py**: create moving_average and Bull list for api_hub.
+  - **stock_data_helper.py**: create moving_average and Bull list for fetch_stock_data_from_api.
   - **json_helper.py**: save, read json file only.
 - **/analyze/**: generate daily png and other algos.
   - **draw.py**: draw png for daily stock, including 21 days and 2 years price/vols. Also Gaussian KDE density for 2 years.
