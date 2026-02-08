@@ -150,11 +150,13 @@ class DbHelper:
         except:
             raise ValueError("Oops! {} occurred".format(sys.exc_info()[0]))
 
+    # TODO: split this function, no need for truncate_table,
+    # move that into a single class which only for create/fix tick
     def insert_to_stock_table(self, stock_name):
         """
         read json, then generate stock_list
         """
-        stock_json = self._read_json(stock_name)
+        stock_json = self._read_json(stock_name=stock_name)
         if len(stock_json) == 0:
             return []
         dl = stock_json["date"]
