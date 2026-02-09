@@ -1,0 +1,30 @@
+# version: '3.6'
+
+services:
+  db:
+    container_name: mysql-stock2
+    image: mysql-stock2:latest
+    # environment:
+    #   MYSQL_ROOT_PASSWORD: 'mysql_pass'
+    #   MYSQL_USER: 'stock2'
+    #   MYSQL_PASS: 'pass'
+    volumes:
+      - /stockDB/mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+  python:
+    container_name: python
+    depends_on:
+      - db
+    image: stock-python:latest
+    volumes:
+      - ./:/app:ro
+      # - ./test-db.py:/app/test-db.py
+    # environment:
+    #   MYSQL_ROOT_PASSWORD: 'mysql_pass'
+    #   MYSQL_USER: 'stock2'
+    #   MYSQL_PASS: 'pass'
+    # volumes:
+    # - ./stockDB/mysql_data:/var/lib/mysql
+    # ports:
+    #   - "3306:3306"

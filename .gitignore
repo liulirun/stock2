@@ -14,10 +14,9 @@ analyze/regression_result/*.png
 
 #mysqlredential data
 stockDB/mysql_data/*
-!stockDB/mysql_data/bk_stock.sql
+!stockDB/mysql_data/*.sql
 stockDB/Dockerfile.bk
-mysql/mysql_data/*
-!mysql/mysql_data/bk_stock.sql
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

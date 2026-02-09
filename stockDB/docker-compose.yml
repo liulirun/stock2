@@ -3,8 +3,9 @@ version: '3.6'
 services:
   mysql:
     container_name: mysql-stock2
-    restart: always
-    image: liulirun/mysql-stock2:latest
+    # restart: always
+    image: mysql-stock2:latest
+    command: [--ignore-db-dir=lost+found]
     environment:
       MYSQL_ROOT_PASSWORD: 'mysql_pass'
       MYSQL_USER: 'stock2'

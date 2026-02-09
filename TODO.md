@@ -1,4 +1,8 @@
 ## TODO-NEW
+1. docker-mysqldb-backup
+  - use mysql latest, import from bk.sql
+  - python backup only for mysql image? exclude bk.sql
+  - bk.sql in code is enough
 1. Add new stock
   - truncate whole stock 
   - create a new stock tick
